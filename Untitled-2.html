@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>QR Code do Amor - Criar</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 1rem;
+    background: #fff4f6;
+    color: #4a2c40;
+    max-width: 700px;
+    margin: auto;
+  }
+  textarea {
+    width: 100%;
+    height: 120px;
+    border-radius: 8px;
+    border: 2px solid #ffd6e0;
+    padding: 1rem;
+    font-size: 1rem;
+    resize: vertical;
+  }
+  button {
+    margin-top: 1rem;
+    background: linear-gradient(135deg, #ff6b8b, #ff3b6c);
+    border: none;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover {
+    opacity: 0.9;
+  }
+  #qrcode {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    min-height: 250px;
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  .instructions {
+    margin-top: 1rem;
+    color: #ff3b6c;
+    font-weight: bold;
+    text-align: center;
+  }
+  .phrases {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .phrase-btn {
+    background: white;
+    color: #ff3b6c;
+    border: 2px solid #ff3b6c;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+  .phrase-btn:hover {
+    background: #ff3b6c;
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+<h1>QR Code do Amor</h1>
+<p>Escolha uma frase pronta ou escreva sua mensagem e gere um QR Code:</p>
+
+<div class="phrases">
+  <button class="phrase-btn" onclick="usePhrase('Te amo mais a cada dia, minha vida!')">Te amo mais a cada dia</button>
+  <button class="phrase-btn" onclick="usePhrase('Você é meu sonho realizado, meu amor eterno.')">Meu sonho realizado</button>
+  <button class="phrase-btn" onclick="usePhrase('Meu coração é seu para sempre, minha princesa.')">Coração seu</button>
+  <button class="phrase-btn" onclick="usePhrase('Com você, todos os dias são especiais e cheios de amor.')">Dias especiais</button>
+  <button class="phrase-btn" onclick="usePhrase('Você ilumina minha vida como ninguém mais.')">Você ilumina minha vida</button>
+</div>
+
+<textarea id="message" placeholder="Escreva sua mensagem de amor aqui..."></textarea>
+<button onclick="generateQR()">Gerar QR Code</button>
+
+<div id="qrcode">
+  <p style="color:#aaa; text-align:center;">Seu QR Code aparecerá aqui</p>
+</div>
+
+<p class="instructions" id="instructions" style="display:none;">
+  Escaneie o QR Code para ver a mensagem!
+</p>
+
+<script>
+  function usePhrase(text) {
+    document.getElementById('message').value = text;
+  }
+
+  function generateQR() {
+    const message = document.getElementById('message').value.trim();
+    const qrcodeEl = document.getElementById('qrcode');
+    const instructions = document.getElementById('instructions');
+
+    if (!message) {
+      alert('Por favor, digite uma mensagem!');
+      return;
+    }
+
+    // Codificar mensagem para URL
+    const encodedMsg = encodeURIComponent(message);
+
+    // Aqui você pode ajustar para seu domínio, se quiser hospedar (exemplo: 'https://seu-usuario.github.io/qr-code-amor/mensagem.html')
+    const url = `${window.location.origin}/mensagem.html?msg=${encodedMsg}`;
+
+    qrcodeEl.innerHTML = '';
+
+    const canvas = document.createElement('canvas');
+
+    QRCode.toCanvas(canvas, url, {
+      errorCorrectionLevel: 'H',
+      margin: 2,
+      color: {
+        dark: '#ff3b6c',
+        light: '#fff4f6'
+      },
+      width: 250
+    }, function (error) {
+      if (error) {
+        qrcodeEl.innerHTML = '<p style="color:red;">Erro ao gerar QR Code</p>';
+        console.error(error);
+      } else {
+        qrcodeEl.appendChild(canvas);
+        instructions.style.display = 'block';
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
